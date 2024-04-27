@@ -3,6 +3,7 @@ import { BsShop } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import "./Home.scss";
 import heroImg from "../../assets/inv-img.png";
+import { ShowOnLogin, ShowOnLogout } from "../../components/protect/HiddenLink";
 // import { ShowOnLogin, ShowOnLogout } from "../../components/protect/HiddenLink";
 
 const Home = () => {
@@ -14,27 +15,27 @@ const Home = () => {
         </div>
 
         <ul className="home-links">
-          {/* <ShowOnLogout> */}
+          <ShowOnLogout>
           <li>
             <button className="--btn --btn-primary">
               <Link to="/app/register-user">Register</Link>
             </button>
           </li>
-          {/* </ShowOnLogout> */}
-          {/* <ShowOnLogout> */}
+          </ShowOnLogout>
+          <ShowOnLogout>
           <li>
             <button className="--btn --btn-primary">
               <Link to="/app/login-user">Login</Link>
             </button>
           </li>
-          {/* </ShowOnLogout> */}
-          {/* <ShowOnLogin> */}
+          </ShowOnLogout>
+          <ShowOnLogin>
           <li>
             <button className="--btn --btn-primary">
               <Link to="/app/dashboard">Dashboard</Link>
             </button>
           </li>
-          {/* </ShowOnLogin> */}
+          </ShowOnLogin>
         </ul>
       </nav>
       {/* HERO SECTION */}
@@ -43,11 +44,11 @@ const Home = () => {
           <h2>Inventory {"&"} Stock Management Solution</h2>
           <p>
             Inventory system to control and manage proucts in the warehouse in
-            real timeand integrated to make it easier to develop your business.
+            realtime and integrated to make it easier to develop your business.
           </p>
           <div className="hero-buttons">
             <button className="--btn --btn-secondary">
-              <Link to="/dashboard">Free Trial 1 Month</Link>
+              <Link to="/app/dashboard">Free Trial 1 Month</Link>
             </button>
           </div>
           <div className="--flex-start">

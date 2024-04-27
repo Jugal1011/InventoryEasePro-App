@@ -1,12 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./auth.module.scss";
 import { BiLogIn } from "react-icons/bi";
 import Card from "../../components/card/Card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser, validateEmail } from "../../services/authService";
+import Loader from "../../components/loader/Loader";
+import { toast } from "react-toastify";
+import { SET_LOGIN, SET_NAME } from "../../redux/features/authSlice";
+
+const initialState = {
+  email: "",
+  password: ""
+};
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setformData] = useState(initialState);
+  const { email, password} = formData;
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setformData({ ...formData, [name]: value });
+  };
+
+  const login = async (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      return toast.error("All fields are required");
+    }
+    if (password.length < 6) {
+      return toast.error("Passwords must be up to 6 characters");
+    }
+    if (!validateEmail(email)) {
+      return toast.error("Please enter a valid email");
+    }
+
+    const userData = {
+      email,
+      password,
+    };
+    setIsLoading(true);
+    try {
+      const data = await loginUser(userData);
+      await dispatch(SET_LOGIN(true));
+      await dispatch(SET_NAME(data.name));
+      navigate("/app/dashboard");
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className={`container ${styles.auth}`}>
+      {isLoading && <Loader />}
       <Card>
         <div className={styles.form}>
           <div className="--flex-center">
@@ -14,13 +65,15 @@ const Login = () => {
           </div>
 
           <h2>Login</h2>
-          <form>
-            <input type="text" placeholder="Email" required name="email" />
+          <form onSubmit={login}>
+            <input type="text" placeholder="Email" required name="email" value={email} onChange={handleInputChange}/>
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               required
               name="password"
+              value={password}
+              onChange={handleInputChange}
             />
             <button type="submit" className="--btn --btn-primary --btn-block">
               Login

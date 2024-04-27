@@ -1,9 +1,11 @@
 import React from 'react'
+import useRedirectLoggedOutUser from '../../customHook/useRedirectLoggedOutUser'
 
 const Dashboard = () => {
-  return (
+  useRedirectLoggedOutUser("/app/login-user");
+  return ( 
     <div>
-      
+      <h2>Dashboard</h2>
     </div>
   )
 }
