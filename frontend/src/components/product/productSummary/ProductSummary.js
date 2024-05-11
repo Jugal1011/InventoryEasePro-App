@@ -1,9 +1,40 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import "./ProductSummary.scss"
+import { BsCart4, BsCartX } from "react-icons/bs";
+import { BiCategory } from "react-icons/bi";
+import InfoBox from '../../infoBox/InfoBox.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { CALC_CATEGORY, CALC_OUTOFSTOCK, CALC_STORE_VALUE, selectCategory, selectOutOfStock, selectTotalStoreValue } from '../../../redux/features/productSlice.js';
+// Icons
+const productIcon = <BsCart4 size={40} color="#fff" />;
+const categoryIcon = <BiCategory size={40} color="#fff" />;
+const outOfStockIcon = <BsCartX size={40} color="#fff" />;
 
-const ProductSummary = () => {
+// Format Amount
+export const formatNumbers = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const ProductSummary = ({products}) => {
+  const dispatch = useDispatch()
+  const totalStoreValue = useSelector(selectTotalStoreValue)
+  const outOfStock = useSelector(selectOutOfStock)
+  const category = useSelector(selectCategory)
+  useEffect(()=>{
+    dispatch(CALC_STORE_VALUE(products));
+    dispatch(CALC_OUTOFSTOCK(products));
+    dispatch(CALC_CATEGORY(products));
+  },[products,dispatch]);
+
   return (
-    <div>
-      
+    <div className='product-summary'>
+      <h3 className='--mt'>Inventory Status</h3>  
+      <div className='info-summary'>
+        <InfoBox icon={productIcon} title={"Total Products"} count={products.length} bgColor="card1"/>
+        <InfoBox icon={<i class="fa fa-inr custom-icon"></i>} title={"Total Store Value"} count={formatNumbers(totalStoreValue)} bgColor="card2"/>
+        <InfoBox icon={outOfStockIcon} title={"Out Of Stock"} count={outOfStock} bgColor="card3"/>
+        <InfoBox icon={categoryIcon} title={"All Categories"} count={category.length} bgColor="card4"/>
+      </div>
     </div>
   )
 }

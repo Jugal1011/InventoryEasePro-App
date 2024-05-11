@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createProduct, selectIsLoading } from "../../redux/features/productSlice";
 import Loader from "../../components/loader/Loader";
 import ProductForm from "../../components/product/productForm/ProductForm";
+import { useNavigate } from "react-router-dom";
 
 const initialState = {
   name: "",
@@ -13,6 +14,7 @@ const initialState = {
 
 const AddProduct = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(initialState);
   const [productImage, setProductImage] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
@@ -44,7 +46,7 @@ const AddProduct = () => {
     console.log(...formData);
 
     dispatch(createProduct(formData));
-
+    navigate("/app/dashboard");
   }
 
   const generateSKU = (category) => {

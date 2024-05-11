@@ -16,7 +16,7 @@ const filterSlice = createSlice({
           product.category.toLowerCase().includes(search.trim().toLowerCase())
       );
 
-      
+
       state.filteredProducts = tempProducts;
     },
   },
