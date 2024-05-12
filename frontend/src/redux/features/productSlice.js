@@ -112,7 +112,7 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     CALC_STORE_VALUE(state, action) {
-      const products = action.payload;
+      const products = action.payload ? action.payload:[];
 
       const array = [];
       products.forEach((item) => {
@@ -129,7 +129,7 @@ const productSlice = createSlice({
     },
 
     CALC_OUTOFSTOCK(state, action) {
-      const products = action.payload;
+      const products = action.payload ? action.payload:[];
 
       let count = 0;
       products.forEach((item) => {
@@ -143,7 +143,7 @@ const productSlice = createSlice({
     },
 
     CALC_CATEGORY(state, action) {
-      const products = action.payload;
+      const products = action.payload ? action.payload:[];
 
       let array =[];
       products.map((item) => {
@@ -163,7 +163,7 @@ const productSlice = createSlice({
       .addCase(createProduct.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.products.push(action.payload);
+        // state.products.push(action.payload);
         toast.success("Product Added Successfully");
       })
       .addCase(createProduct.rejected, (state, action) => {
@@ -178,7 +178,7 @@ const productSlice = createSlice({
       .addCase(getAllProducts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.products = action.payload;
+        state.products = action.payload ? action.payload : [];
       })
       .addCase(getAllProducts.rejected, (state, action) => {
         state.isLoading = false;

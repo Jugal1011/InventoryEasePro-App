@@ -97,7 +97,9 @@ const deleteProduct = asyncHandler(async (req, res) => {
   };
 
   try {
-    const result = await cloudinary.uploader.destroy(public_id, options);
+    if ( product.image && product.image.publicID) {
+      await cloudinary.uploader.destroy(public_id, options);
+    }
     // console.log(result);
     await Product.deleteOne({ _id: req.params.id, user: req.user.id });
   } catch (error) {
@@ -105,7 +107,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
     throw new Error("Image could not be deleted");
   }
 
-  
   res.status(200).json({ message: "Product deleted." });
 });
 
@@ -127,12 +128,22 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error("User not authorized");
   }
 
+  // Public ID of the asset you want to delete
+  const public_id = product.image.publicID;
+  const options = {
+    invalidate: true,
+  };
+
   // Handle Image upload
   let fileData = {};
   if (req.file) {
     // Save image to cloudinary
     let uploadedFile;
     try {
+      if ( product.image && product.image.publicID) {
+        console.log(public_id);
+        await cloudinary.uploader.destroy(public_id, options);
+      }
       uploadedFile = await cloudinary.uploader.upload(req.file.path, {
         folder: "Inventory App",
         resource_type: "image",

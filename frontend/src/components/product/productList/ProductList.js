@@ -24,7 +24,9 @@ const ProductList = ({ products, isLoading }) => {
   const filteredProducts = useSelector(selectFilteredProducts);
 
   useEffect(() => {
-    dispatch(FILTER_PRODUCTS({ products, search }));
+    if (products) {
+      dispatch(FILTER_PRODUCTS({ products, search }));
+    }
   }, [products, search, dispatch]);
 
   const shortenText = (text, n) => {

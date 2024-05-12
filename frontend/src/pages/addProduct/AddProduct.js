@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createProduct, selectIsLoading } from "../../redux/features/productSlice";
+import { createProduct, getAllProducts, selectIsLoading } from "../../redux/features/productSlice";
 import Loader from "../../components/loader/Loader";
 import ProductForm from "../../components/product/productForm/ProductForm";
 import { useNavigate } from "react-router-dom";
@@ -43,7 +43,8 @@ const AddProduct = () => {
     formData.append("description", description);
     formData.append("image", productImage);
     
-    dispatch(createProduct(formData));
+    await dispatch(createProduct(formData));
+    await dispatch(getAllProducts());
     navigate("/app/dashboard");
   }
 

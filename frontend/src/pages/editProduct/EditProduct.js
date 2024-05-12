@@ -59,8 +59,8 @@ const EditProduct = () => {
       formData.append("image", productImage);
     }
 
-    dispatch(updateProduct({ formData,id }));
-    dispatch(getAllProducts());
+    await dispatch(updateProduct({ formData,id }));
+    await dispatch(getAllProducts());
     navigate("/app/dashboard");
   };
 

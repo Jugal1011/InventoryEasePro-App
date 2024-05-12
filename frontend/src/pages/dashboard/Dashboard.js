@@ -10,7 +10,8 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   useRedirectLoggedOutUser("/app/login-user");
   const isLoggedIn = useSelector(selectIsLoggedIn);
-  const {products, isLoading, isError, message} = useSelector((state)=> state.product);
+  const {products,isError, message} = useSelector((state)=> state.product);
+  const isLoading = useSelector(selectIsLoading);
 
   useEffect(()=>{
     if(isLoggedIn === true){
