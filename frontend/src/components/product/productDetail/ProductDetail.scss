@@ -12,7 +12,7 @@
       margin-bottom: 1rem;
     }
     .badge {
-      background-color: var(--color-danger);
+      background-color: var(--dark-blue);
       color: #fff;
       padding-left: 2px;
       padding-right: 2px;
@@ -27,4 +27,9 @@
 .group {
   border: 1px solid var(--dark-blue);
   padding: 5px;
+}
+
+.custom-image{
+  height: 405px;
+  width: 465px;
 }

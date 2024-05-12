@@ -72,9 +72,9 @@ export const deleteProduct = createAsyncThunk(
   // Update Product
   export const updateProduct = createAsyncThunk(
     "products/update",
-    async ({productId,formData}, thunckAPI) => {
+    async ({formData,id}, thunckAPI) => {
       try {
-        return await productService.updateProduct(formData,productId);
+        return await productService.updateProduct(formData,id);
       } catch (error) {
         const message =
           (error.response &&

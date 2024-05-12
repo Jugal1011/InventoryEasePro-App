@@ -42,9 +42,7 @@ const AddProduct = () => {
     formData.append("price", price);
     formData.append("description", description);
     formData.append("image", productImage);
-
-    console.log(...formData);
-
+    
     dispatch(createProduct(formData));
     navigate("/app/dashboard");
   }

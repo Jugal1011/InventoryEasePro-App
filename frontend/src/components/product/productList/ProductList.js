@@ -55,7 +55,6 @@ const ProductList = ({ products, isLoading }) => {
   // End Pagination
 
   const delProduct = async (productId) => {
-    console.log(productId);
     await dispatch(deleteProduct(productId));
     await dispatch(getAllProducts());
   };
