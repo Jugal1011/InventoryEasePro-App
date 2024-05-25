@@ -6,9 +6,18 @@
       padding-top: 1.5rem;
       padding-bottom: 1.5rem;
       color: #fff;
-      & > .logo {
-        color: #fff;
-      }
+    }
+
+    .logo-div span {
+      color: #fff;
+      font-size: 30px;
+      font-weight: 500;
+    }
+    .logo-div{
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 10px;
     }
   }
   .home-links {
@@ -36,8 +45,9 @@
       color: #fff;
       margin-bottom: 2rem;
     }
-    & > h2 span {
+    & > p {
       display: block;
+      font-size: 1.7rem;
     }
     & .hero-buttons a {
       color: #fff;

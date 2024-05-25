@@ -21,21 +21,22 @@ main {
 
 .top_section {
   display: flex;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 10px 15px;
+  padding: 5px 5px;
   // border-bottom: 2px solid #ccc;
   transition: all 0.5s;
   background-color: var(--dark-blue);
   height: 70px;
 }
-.logo {
-  font-size: 30px;
+.logo-text {
+  font-size: 19px;
   color: var(--color-white);
 }
 .bars {
   display: flex;
   font-size: 25px;
-  margin-left: 70px;
+  margin-left: 5px;
   cursor: pointer;
   color: var(--color-white);
   transition: all 0.3s;
