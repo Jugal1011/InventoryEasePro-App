@@ -1,5 +1,6 @@
 import { FaTh, FaRegChartBar, FaCommentAlt } from "react-icons/fa";
 import { BiImageAdd } from "react-icons/bi";
+import { FaUser,FaUserEdit } from "react-icons/fa";
 
 const menu = [
   {
@@ -19,10 +20,12 @@ const menu = [
       {
         title: "Profile",
         path: "/app/account/profile",
+        icon: <FaUser />
       },
       {
         title: "Edit Profile",
         path: "/app/account/edit-profile",
+        icon: <FaUserEdit />
       },
     ],
   },
