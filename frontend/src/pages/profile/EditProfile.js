@@ -7,6 +7,7 @@ import Loader from "../../components/loader/Loader";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../services/authService";
 import { toast } from "react-toastify";
+import ChangePassword from "../../components/changePassword/ChangePassword";
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -141,7 +142,7 @@ const EditProfile = () => {
         </form>
       </Card>
       <br />
-      {/* <ChangePassword /> */}
+      <ChangePassword />
     </div>
   );
 };

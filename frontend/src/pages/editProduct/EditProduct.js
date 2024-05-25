@@ -10,6 +10,7 @@ import {
 } from "../../redux/features/productSlice";
 import Loader from "../../components/loader/Loader";
 import ProductForm from "../../components/product/productForm/ProductForm";
+import { toast } from "react-toastify";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -49,6 +50,11 @@ const EditProduct = () => {
 
   const editProduct = async (e) => {
     e.preventDefault();
+    //   Validation
+    if (!product?.name || !product?.category || !product?.quantity || !product?.price || !product?.description) {
+      return toast.error("Please fill in all fields");
+    }
+    
     const formData = new FormData();
     formData.append("name", product?.name);
     formData.append("category", product?.category);

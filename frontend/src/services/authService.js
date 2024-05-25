@@ -146,7 +146,7 @@ export const updateUser = async (formData) => {
     toast.error(message);
   }
 };
-// Upa
+// Change Passowrd
 export const changePassword = async (formData) => {
   try {
     const response = await axios.patch(

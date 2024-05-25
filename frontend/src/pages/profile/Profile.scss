@@ -23,6 +23,10 @@
       border-top: 1px solid #ccc;
       padding: 5px 0;
     }
+    label{
+      color: black;
+      font-weight: 500;
+    }
   }
 }
 
@@ -34,6 +38,7 @@
 
 .bio-block {
   display: block;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 17px;
+  color: black;
 }
