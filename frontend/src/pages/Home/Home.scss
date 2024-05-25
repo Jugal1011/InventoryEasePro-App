@@ -60,6 +60,10 @@
     .hero {
       flex-direction: column;
     }
+
+    nav {
+      flex-direction: column;
+    }
   
     .hero-text {
       display: flex;
@@ -71,8 +75,8 @@
       text-align: center;
     }
     .hero-image {
-      width: 100%;
-      &img {
+      width: 80%;
+      & img {
         width: 100%;
       }
     }
