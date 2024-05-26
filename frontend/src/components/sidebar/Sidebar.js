@@ -1,28 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Sidebar.scss";
-import menu from "../../data/sidebar"
+import menu from "../../data/sidebar";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import SidebarItem from "./SidebarItem";
 import supply from "../../assets/supply-2.svg";
 
 const Sidebar = ({ children }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const toggle = () => {
     setIsOpen(!isOpen);
   };
-  const navigate = useNavigate();
+
   const goHome = () => {
     navigate("/");
   };
-  return (
+
+  const handleResize = () => {
+    if (window.innerWidth < 600) {
+      setIsOpen(false);
+    }
+  }
+  // create an event listener
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    handleResize()
+  }, []);
+
+  return (   
     <div className="layout">
       <div className="sidebar" style={{ width: isOpen ? "270px" : "60px" }}>
         <div className="top_section">
           <img
             src={supply}
             alt="Inventory"
-            style={{ display: isOpen ? "" : "none" }}
+            style={{ display: isOpen ? "" : "none", cursor: "pointer" }}
+            onClick={goHome}
           />
           <span className="logo-text" style={{ display: isOpen ? "" : "none" }}>
             InventoryEasePro

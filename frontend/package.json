@@ -19,6 +19,7 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",
+    "react-tooltip": "^5.26.4",
     "sass": "^1.74.1",
     "sass-loader": "^14.1.1",
     "web-vitals": "^2.1.4"

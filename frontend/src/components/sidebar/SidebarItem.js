@@ -17,7 +17,16 @@ const SidebarItem = ({ item, isOpen }) => {
       >
         <div className="sidebar-title">
           <span>
-            {item.icon && <div className="icons">{item.icon}</div>}
+            {item.icon && (
+              <div
+                className="icons"
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content={item.title}
+                data-tooltip-place="right-end"
+              >
+                {item.icon}
+              </div>
+            )}
             {isOpen && <div>{item.title}</div>}
           </span>
           <MdKeyboardArrowRight
@@ -37,7 +46,14 @@ const SidebarItem = ({ item, isOpen }) => {
                     <div className="sidebar-title">
                       <span>
                         {child.icon && (
-                          <div className="icons">{child.icon}</div>
+                          <div
+                            className="icons"
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content={child.title}
+                            data-tooltip-place="right-end"
+                          >
+                            {child.icon}
+                          </div>
                         )}
                         {isOpen && <div>{child.title}</div>}
                       </span>
@@ -56,7 +72,16 @@ const SidebarItem = ({ item, isOpen }) => {
         <div className="sidebar-item s-parent">
           <div className="sidebar-title">
             <span>
-              {item.icon && <div className="icons">{item.icon}</div>}
+              {item.icon && (
+                <div
+                  className="icons"
+                  data-tooltip-id="my-tooltip"
+                  data-tooltip-content={item.title}
+                  data-tooltip-place="right-end"
+                >
+                  {item.icon}
+                </div>
+              )}
               {isOpen && <div>{item.title}</div>}
             </span>
           </div>
