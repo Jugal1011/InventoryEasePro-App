@@ -15,6 +15,8 @@ const initialState = {
 const Reset = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setformData] = useState(initialState);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const { password, confirmPassword } = formData;
   const {resetToken} = useParams();
 
@@ -47,6 +49,13 @@ const Reset = () => {
     }
   };
 
+  const toggleShowPassword = (str) => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const toggleShowPasswordConfirm = (str) => {
+    setShowPasswordConfirm((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <div className={`container ${styles.auth}`}>
       {isLoading && <Loader />}
@@ -58,22 +67,58 @@ const Reset = () => {
 
           <h2>Reset Password</h2>
           <form onSubmit={reset}>
-            <input
-              type="password"
-              placeholder="New Password"
-              required
-              name="password"
-              value={password}
-              onChange={handleInputChange}
-            />
-            <input
-              type="password"
-              placeholder="Confirm New Password"
-              required
-              name="confirmPassword"
-              value={confirmPassword}
-              onChange={handleInputChange}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="New Password"
+                required
+                name="password"
+                value={password}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                onClick={toggleShowPassword}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  marginRight: "10px"
+                }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPasswordConfirm ? "text" : "password"}
+                placeholder="Confirm New Password"
+                required
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                onClick={toggleShowPasswordConfirm}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  marginRight: "10px"
+                }}
+              >
+                {showPasswordConfirm ? "Hide" : "Show"}
+              </button>
+            </div>
             <button type="submit" className="--btn --btn-primary --btn-block">
               Reset Password
             </button>

@@ -19,7 +19,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setformData] = useState(initialState);
-  const { email, password} = formData;
+  const [showPassword, setShowPassword] = useState(false);
+  const { email, password } = formData;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,6 +56,10 @@ const Login = () => {
     }
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <div className={`container ${styles.auth}`}>
       {isLoading && <Loader />}
@@ -66,15 +71,40 @@ const Login = () => {
 
           <h2>Login</h2>
           <form onSubmit={login}>
-            <input type="text" placeholder="Email" required name="email" value={email} onChange={handleInputChange}/>
             <input
-              type="password"
-              placeholder="Password"
+              type="text"
+              placeholder="Email"
               required
-              name="password"
-              value={password}
+              name="email"
+              value={email}
               onChange={handleInputChange}
             />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                required
+                name="password"
+                value={password}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                onClick={toggleShowPassword}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  marginRight: "10px"
+                }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
             <button type="submit" className="--btn --btn-primary --btn-block">
               Login
             </button>
@@ -82,7 +112,7 @@ const Login = () => {
 
           <div className={styles.forget}>
             <Link to="/app/forget-password">Forget Password</Link>
-          </div> 
+          </div>
 
           <span className={styles.register}>
             <Link to="/">Home</Link>
