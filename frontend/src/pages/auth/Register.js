@@ -8,6 +8,8 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { SET_LOGIN, SET_NAME } from "../../redux/features/authSlice";
 import Loader from "../../components/loader/Loader";
+import { FaRegEye } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 const initialState = {
   name: "",
@@ -22,6 +24,8 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setformData] = useState(initialState);
   const { name, email, password, password2 } = formData;
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,6 +65,13 @@ const Register = () => {
     }
   };
 
+  const toggleShowPassword = (str) => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+  const toggleShowPasswordConfirm = (str) => {
+    setShowPasswordConfirm((prevShowPassword) => !prevShowPassword);
+  };
+
   return (
     <div className={`container ${styles.auth}`}>
       {isLoading && <Loader />}
@@ -88,22 +99,58 @@ const Register = () => {
               value={email}
               onChange={handleInputChange}
             />
-            <input
-              type="password"
-              placeholder="Password"
-              required
-              name="password"
-              value={password}
-              onChange={handleInputChange}
-            />
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              required
-              name="password2"
-              value={password2}
-              onChange={handleInputChange}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                required
+                name="password"
+                value={password}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                onClick={toggleShowPassword}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  marginRight: "10px"
+                }}
+              >
+                {showPassword ? <FaRegEye /> : <FaRegEyeSlash /> }
+              </button>
+            </div>
+            <div style={{ position: "relative" }}>
+              <input
+                type={showPasswordConfirm ? "text" : "password"}
+                placeholder="Confirm Password"
+                required
+                name="password2"
+                value={password2}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                onClick={toggleShowPasswordConfirm}
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: 0,
+                  height: "100%",
+                  cursor: "pointer",
+                  background: "none",
+                  border: "none",
+                  marginRight: "10px"
+                }}
+              >
+                {showPasswordConfirm ? <FaRegEye /> : <FaRegEyeSlash /> }
+              </button>
+            </div>
             <button type="submit" className="--btn --btn-primary --btn-block">
               Register
             </button>

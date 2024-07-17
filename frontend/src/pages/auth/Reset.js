@@ -6,6 +6,8 @@ import { Link, useParams } from "react-router-dom";
 import { resetPassword } from "../../services/authService";
 import { toast } from "react-toastify";
 import Loader from "../../components/loader/Loader";
+import { FaRegEye } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 const initialState = {
   password: "",
@@ -90,7 +92,7 @@ const Reset = () => {
                   marginRight: "10px"
                 }}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? <FaRegEye /> : <FaRegEyeSlash /> }
               </button>
             </div>
             <div style={{ position: "relative" }}>
@@ -116,7 +118,7 @@ const Reset = () => {
                   marginRight: "10px"
                 }}
               >
-                {showPasswordConfirm ? "Hide" : "Show"}
+                {showPasswordConfirm ? <FaRegEye /> : <FaRegEyeSlash /> }
               </button>
             </div>
             <button type="submit" className="--btn --btn-primary --btn-block">
