@@ -8,6 +8,8 @@ import { loginUser, validateEmail } from "../../services/authService";
 import Loader from "../../components/loader/Loader";
 import { toast } from "react-toastify";
 import { SET_LOGIN, SET_NAME } from "../../redux/features/authSlice";
+import { FaRegEye } from "react-icons/fa";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 const initialState = {
   email: "",
@@ -102,7 +104,7 @@ const Login = () => {
                   marginRight: "10px"
                 }}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? <FaRegEye size={15}/> : <FaRegEyeSlash size={15}/>}
               </button>
             </div>
             <button type="submit" className="--btn --btn-primary --btn-block">
