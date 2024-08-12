@@ -40,29 +40,75 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
   });
 
-  //   Generate Token
-  const token = generateToken(user._id);
+  // //   Generate Token
+  // const token = generateToken(user._id);
 
-  // Send HTTP-only cookie
-  res.cookie("token", token, {
-    path: "/",
-    httpOnly: true,
-    expires: new Date(Date.now() + 1000 * 86400), // 1 day
-    sameSite: "none",
-    secure: true,
-  });
+  // // Send HTTP-only cookie
+  // res.cookie("token", token, {
+  //   path: "/",
+  //   httpOnly: true,
+  //   expires: new Date(Date.now() + 1000 * 86400), // 1 day
+  //   sameSite: "none",
+  //   secure: true,
+  // });
+
+  // Create Confirm Email Token
+  let confirmEmailToken = crypto.randomBytes(32).toString("hex") + user._id;
+  console.log(confirmEmailToken);
+
+  // Hash token before saving to DB
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(confirmEmailToken)
+    .digest("hex");
+
+  // Save Token to DB
+  await new Token({
+    userId: user._id,
+    token: hashedToken,
+    tokenType: "confirm-email",
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 30 * (60 * 1000), // Thirty minutes
+  }).save();
+
+  // Construct Reset Url
+  const resetUrl = `${process.env.FRONTEND_URL}/app/confirm-email/${confirmEmailToken}`;
+
+  // Reset Email
+  const message = `
+      <h2>Hello ${user.name}</h2>
+      <p>You have been successfully registered.</p>  
+      <p>Please use the url below to confirm your email.</p>  
+      <p>This confirm email link is valid for only 30 minutes.</p>
+
+      <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+
+      <p>Regards...</p>
+      <p>InventoryEasePro Team</p>
+    `;
+  const subject = "Confirm Email Link";
+  const send_to = user.email;
+  const sent_from = process.env.EMAIL_USER;
 
   if (user) {
-    const { _id, name, email, photo, phone, bio } = user;
-    res.status(201).json({
-      _id,
-      name,
-      email,
-      photo,
-      phone,
-      bio,
-      token,
-    });
+    try {
+      await sendEmail(subject, message, send_to, sent_from);
+      const { _id, name, email, photo, phone, bio } = user;
+      res.status(201).json({
+        _id,
+        name,
+        email,
+        photo,
+        phone,
+        bio,
+        // token,
+      });
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        "Email not sent, please try again. Email might not be valid"
+      );
+    }
   } else {
     res.status(400);
     throw new Error("Invalid user data");
@@ -87,22 +133,82 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("User not found, please signup");
   }
 
+  if (!user.verified) {
+    // Delete token if it exists in DB
+    let token = await Token.findOne({
+      userId: user._id,
+      tokenType: "confirm-email",
+    });
+    if (token) {
+      await token.deleteOne();
+    }
+
+    // Create Confirm Email Token
+    let confirmEmailToken = crypto.randomBytes(32).toString("hex") + user._id;
+    console.log(confirmEmailToken);
+
+    // Hash token before saving to DB
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(confirmEmailToken)
+      .digest("hex");
+
+    // Save Token to DB
+    await new Token({
+      userId: user._id,
+      token: hashedToken,
+      tokenType: "confirm-email",
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 30 * (60 * 1000), // Thirty minutes
+    }).save();
+
+    // Construct Reset Url
+    const resetUrl = `${process.env.FRONTEND_URL}/app/confirm-email/${confirmEmailToken}`;
+
+    // Reset Email
+    const message = `
+      <h2>Hello ${user.name}</h2>
+      <p>You have been successfully registered.</p>  
+      <p>Please use the url below to confirm your email.</p>  
+      <p>This confirm email link is valid for only 30 minutes.</p>
+
+      <a href=${resetUrl} clicktracking=off>${resetUrl}</a>
+
+      <p>Regards...</p>
+      <p>InventoryEasePro Team</p>
+    `;
+    const subject = "Confirm Email Link";
+    const send_to = user.email;
+    const sent_from = process.env.EMAIL_USER;
+    try {
+      await sendEmail(subject, message, send_to, sent_from);
+    } catch (error) {
+      res.status(500);
+      throw new Error("Email is not valid");
+    }
+
+    res.status(400);
+    throw new Error(
+      "User email not verified, we have sent email verification link"
+    );
+  }
+
   // User exists, check if password is correct
   const passwordIsCorrect = await bcrypt.compare(password, user.password);
 
   //   Generate Token
   const token = generateToken(user._id);
-  
-  if(passwordIsCorrect){
-   // Send HTTP-only cookie
-  res.cookie("token", token, {
-    path: "/",
-    httpOnly: true,
-    expires: new Date(Date.now() + 1000 * 86400), // 1 day
-    sameSite: "none",
-    secure: true,
-  });
-}
+
+  if (passwordIsCorrect) {
+    // Send HTTP-only cookie
+    res.cookie("token", token, {
+      path: "/",
+      httpOnly: true,
+      expires: new Date(Date.now() + 1000 * 86400), // 1 day
+      sameSite: "none",
+      secure: true,
+    });
+  }
   if (user && passwordIsCorrect) {
     const { _id, name, email, photo, phone, bio } = user;
     res.status(200).json({
@@ -195,7 +301,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const changePassword = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
-  const { oldPassword,  password, confirmPassword } = req.body;
+  const { oldPassword, password, confirmPassword } = req.body;
 
   if (!user) {
     res.status(400);
@@ -207,7 +313,7 @@ const changePassword = asyncHandler(async (req, res) => {
     throw new Error("Please add old and new password");
   }
 
-  if(password !== confirmPassword){
+  if (password !== confirmPassword) {
     res.status(400);
     throw new Error("New password and confirm password don't match");
   }
@@ -236,12 +342,15 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 
   // Delete token if it exists in DB
-  let token = await Token.findOne({ userId: user._id });
+  let token = await Token.findOne({
+    userId: user._id,
+    tokenType: "forget-password",
+  });
   if (token) {
     await token.deleteOne();
   }
 
-  // Create Reste Token
+  // Create Reset Token
   let resetToken = crypto.randomBytes(32).toString("hex") + user._id;
   console.log(resetToken);
 
@@ -255,6 +364,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   await new Token({
     userId: user._id,
     token: hashedToken,
+    tokenType: "forget-password",
     createdAt: Date.now(),
     expiresAt: Date.now() + 30 * (60 * 1000), // Thirty minutes
   }).save();
@@ -288,14 +398,14 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
 // Reset Password
 const resetPassword = asyncHandler(async (req, res) => {
-  const { password,confirmPassword } = req.body;
+  const { password, confirmPassword } = req.body;
   const { resetToken } = req.params;
 
-  if(password !== confirmPassword){
+  if (password !== confirmPassword) {
     res.status(400);
     throw new Error("New password and confirm password don't match");
   }
-  
+
   // Hash token, then compare to Token in DB
   const hashedToken = crypto
     .createHash("sha256")
@@ -305,6 +415,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   // fIND tOKEN in DB
   const userToken = await Token.findOne({
     token: hashedToken,
+    tokenType: "forget-password",
     expiresAt: { $gt: Date.now() },
   });
 
@@ -322,6 +433,42 @@ const resetPassword = asyncHandler(async (req, res) => {
   });
 });
 
+// Verify-Confirm Email
+const confirmEmail = asyncHandler(async (req, res) => {
+  const { confirmEmailToken } = req.params;
+
+  // Hash Token, then compare to Token in DB
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(confirmEmailToken)
+    .digest("hex");
+
+  // Find Token in DB
+  const userToken = await Token.findOne({
+    token: hashedToken,
+    tokenType: "confirm-email",
+    expiresAt: { $gt: Date.now() },
+  });
+
+  if (!userToken) {
+    res.status(404);
+    throw new Error("Invalid or expired token");
+  }
+
+  // Find user
+  const user = await User.findOne({ _id: userToken.userId });
+  if(user.verified){
+    res.status(200).json({
+      data: "User email already verified",
+    });
+  }
+  user.verified = true;
+  await user.save();
+  res.status(200).json({
+    data: "User email verified successfully",
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -332,4 +479,5 @@ module.exports = {
   changePassword,
   forgotPassword,
   resetPassword,
+  confirmEmail
 };

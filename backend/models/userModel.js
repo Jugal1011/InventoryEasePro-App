@@ -37,13 +37,17 @@ const userSchema = mongoose.Schema(
       maxLength: [250, "Bio must not be more than 250 characters"],
       default: "bio",
     },
+    verified:{
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,
   }
 );
 
-//   Encrypt password before saving to DB
+// Encrypt password before saving to DB
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -54,6 +58,15 @@ userSchema.pre("save", async function (next) {
   const hashedPassword = await bcrypt.hash(this.password, salt);
   this.password = hashedPassword;
   next();
+});
+
+userSchema.pre("remove", async function (next) {
+  try {
+    await mongoose.model("Token").deleteMany({ userId: this._id });
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 const User = mongoose.model("User", userSchema);

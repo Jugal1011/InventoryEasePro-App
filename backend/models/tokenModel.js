@@ -10,6 +10,11 @@ const tokenSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  tokenType: {
+    type: String,
+    required: true,
+    enum: ["forget-password", "confirm-email"], // Only these values are allowed
+  },
   createdAt: {
     type: Date,
     required: true,

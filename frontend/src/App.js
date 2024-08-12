@@ -21,6 +21,7 @@ import Profile from "./pages/profile/Profile";
 import EditProfile from "./pages/profile/EditProfile";
 import Contact from "./pages/contact/Contact";
 import { Tooltip } from "react-tooltip";
+import ConfirmEmail from "./pages/auth/ConfirmEmail";
 
 axios.defaults.withCredentials = true;
 
@@ -44,6 +45,7 @@ function App() {
         <Route path="/app/register-user" element={<Register/>}></Route>
         <Route path="/app/forget-password" element={<Forget/>}></Route>
         <Route path="/app/reset-password/:resetToken" element={<Reset/>}></Route>
+        <Route path="/app/confirm-email/:confirmEmailToken" element={<ConfirmEmail/>}></Route>
         <Route path="/app/dashboard" element={
           <Sidebar>
             <Layout>

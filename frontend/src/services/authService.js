@@ -19,7 +19,7 @@ export const registerUser = async (userData) => {
     );
 
     if (response.status === 201) {
-      toast.success("User Registered Successfully");
+      toast.success("Successfully sent email for verification");
     }
     return response.data;
   } catch (error) {
@@ -39,7 +39,7 @@ export const loginUser = async (userData) => {
       userData
     );
     if (response.status === 200) {
-      toast.success("User Login Successfully");
+      toast.success("User login successfully");
     }
     return response.data;
   } catch (error) {
@@ -82,7 +82,7 @@ export const forgetPassword = async (userData) => {
 };
 
 // Reset Password
-export const resetPassword = async (userData,resetToken) => {
+export const resetPassword = async (userData, resetToken) => {
   try {
     const response = await axios.put(
       `${BACKEND_URL}/api/users/resetpassword/${resetToken}`,
@@ -101,9 +101,7 @@ export const resetPassword = async (userData,resetToken) => {
 // Get Login Status
 export const getLoggedInStatus = async () => {
   try {
-    const response = await axios.get(
-      `${BACKEND_URL}/api/users/loggedin`
-    );
+    const response = await axios.get(`${BACKEND_URL}/api/users/loggedin`);
     return response.data;
   } catch (error) {
     const message =
@@ -117,9 +115,7 @@ export const getLoggedInStatus = async () => {
 // Get User Details
 export const getUser = async () => {
   try {
-    const response = await axios.get(
-      `${BACKEND_URL}/api/users/getUser`
-    );
+    const response = await axios.get(`${BACKEND_URL}/api/users/getUser`);
     return response.data;
   } catch (error) {
     const message =
@@ -152,6 +148,22 @@ export const changePassword = async (formData) => {
     const response = await axios.patch(
       `${BACKEND_URL}/api/users/changepassword`,
       formData
+    );
+    return response.data;
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    toast.error(message);
+  }
+};
+
+// Confirm Email
+export const confirmEmail = async (confirmEmailToken) => {
+  try {
+    const response = await axios.put(
+      `${BACKEND_URL}/api/users/confirmEmail/${confirmEmailToken}`,{}
     );
     return response.data;
   } catch (error) {
