@@ -9,15 +9,15 @@ const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 const oAuth2Client = new google.auth.OAuth2(
   CLIENT_ID,
   CLIENT_SECRET,
-  REDIRECT_URI
+  REDIRECT_URI,
 );
 
-oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+oAuth2Client.setCredentials({
+  refresh_token: REFRESH_TOKEN,
+});
 
 const sendEmail = async (subject, message, send_to) => {
   try {
-    const accessToken = await oAuth2Client.getAccessToken();
-
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -26,7 +26,6 @@ const sendEmail = async (subject, message, send_to) => {
         clientId: CLIENT_ID,
         clientSecret: CLIENT_SECRET,
         refreshToken: REFRESH_TOKEN,
-        accessToken: accessToken.token,
       },
     });
 
@@ -38,9 +37,11 @@ const sendEmail = async (subject, message, send_to) => {
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log("Email sent:", result);
+    console.log("Email sent:", result.response);
+    return result;
   } catch (error) {
-    console.log(error);
+    console.error("Email error:", error);
+    throw error;
   }
 };
 
