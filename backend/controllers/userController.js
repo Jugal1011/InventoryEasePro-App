@@ -20,9 +20,21 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Please fill in all required fields");
   }
-  if (password.length < 6) {
+  // Old password validation
+  // if (password.length < 6) {
+  //   res.status(400);
+  //   throw new Error("Password must be up to 6 characters");
+  // }
+
+  // Strong password validation
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/;
+
+  if (!passwordRegex.test(password)) {
     res.status(400);
-    throw new Error("Password must be up to 6 characters");
+    throw new Error(
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character."
+    );
   }
 
   // Check if user email already exists
@@ -88,11 +100,10 @@ const registerUser = asyncHandler(async (req, res) => {
     `;
   const subject = "Confirm Email Link";
   const send_to = user.email;
-  const sent_from = process.env.EMAIL_USER;
 
   if (user) {
     try {
-      await sendEmail(subject, message, send_to, sent_from);
+      await sendEmail(subject, message, send_to);
       const { _id, name, email, photo, phone, bio } = user;
       res.status(201).json({
         _id,
@@ -179,9 +190,8 @@ const loginUser = asyncHandler(async (req, res) => {
     `;
     const subject = "Confirm Email Link";
     const send_to = user.email;
-    const sent_from = process.env.EMAIL_USER;
     try {
-      await sendEmail(subject, message, send_to, sent_from);
+      await sendEmail(subject, message, send_to);
     } catch (error) {
       res.status(500);
       throw new Error("Email is not valid");
@@ -385,10 +395,8 @@ const forgotPassword = asyncHandler(async (req, res) => {
     `;
   const subject = "Password Reset Request";
   const send_to = user.email;
-  const sent_from = process.env.EMAIL_USER;
-
   try {
-    await sendEmail(subject, message, send_to, sent_from);
+    await sendEmail(subject, message, send_to);
     res.status(200).json({ success: true, message: "Reset Email Sent" });
   } catch (error) {
     res.status(500);

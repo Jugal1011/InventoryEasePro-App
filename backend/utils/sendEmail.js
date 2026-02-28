@@ -1,37 +1,47 @@
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 
-const sendEmail = async (subject, message, send_to, sent_from, reply_to) => {
-  // Create Email Transporter
-  const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_HOST,
-    secure: true,
-    port: 465,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    // tls: {
-    //   rejectUnauthorized: false,
-    // },
-  });
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
-  // Option for sending email
-  const receiver = {
-    from: sent_from,
-    to: send_to,
-    replyTo: reply_to,
-    subject: subject,
-    html: message,
-  };
+const oAuth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URI
+);
 
-  // send email
-  transporter.sendMail(receiver, function (err, info) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(info);
-    }
-  });
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+
+const sendEmail = async (subject, message, send_to) => {
+  try {
+    const accessToken = await oAuth2Client.getAccessToken();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: process.env.EMAIL_USER,
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+        refreshToken: REFRESH_TOKEN,
+        accessToken: accessToken.token,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: send_to,
+      subject: subject,
+      html: message,
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log("Email sent:", result);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = sendEmail;
