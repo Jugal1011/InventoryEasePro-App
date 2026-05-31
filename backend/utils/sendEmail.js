@@ -2,7 +2,7 @@ const { google } = require("googleapis");
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+const REDIRECT_URI = process.env.REDIRECT_URI;
 const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
 
 const oAuth2Client = new google.auth.OAuth2(
@@ -50,7 +50,7 @@ const sendEmail = async (subject, message, send_to) => {
     console.log("Email sent:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Email error:", error.message);
+    console.error("Email error:", error);
     throw error;
   }
 };
